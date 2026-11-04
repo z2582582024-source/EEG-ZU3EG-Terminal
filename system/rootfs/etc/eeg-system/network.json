@@ -1,0 +1,10 @@
+{
+  "schema": "eeg.network.v1",
+  "device_path": "ff0e0000.ethernet",
+  "phy_id": "0x4f51e91b",
+  "mode": "static",
+  "address": "192.168.137.2/24",
+  "netmask": "255.255.255.0",
+  "gateway": null,
+  "dns": []
+}

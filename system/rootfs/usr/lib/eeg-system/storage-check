@@ -1,0 +1,32 @@
+#!/bin/sh
+# Persistent ext4 root is the recording filesystem; no mmc numbering assumption.
+set -eu
+fs=$(findmnt -n -o FSTYPE --target /var/lib/eeg-operator/recordings)
+opts=$(findmnt -n -o OPTIONS --target /var/lib/eeg-operator/recordings)
+source=$(findmnt -n -o SOURCE --target /var/lib/eeg-operator/recordings)
+[ "$fs" = ext4 ] || { echo EEG_RECORDING_VOLUME_NOT_EXT4; exit 3; }
+case ",$opts," in *,rw,*) :;; *) echo EEG_RECORDING_VOLUME_NOT_WRITABLE; exit 3;; esac
+[ "$(findmnt -n -o SOURCE --target /)" = "$source" ] || { echo EEG_RECORDING_SOURCE_NOT_ROOT; exit 3; }
+case "$source" in /dev/*) :;; *) echo EEG_RECORDING_SOURCE_NOT_BLOCK_DEVICE; exit 3;; esac
+[ ! -L /var/lib/eeg-operator/recordings ] || { echo EEG_RECORDING_DIRECTORY_SYMLINK_REJECTED; exit 3; }
+python3 - <<'PY'
+import json
+from pathlib import Path
+import subprocess
+identity=json.loads(Path('/etc/eeg-system/baseline.json').read_text())
+checks={
+    'storage_id': identity.get('storage_id') == 'p5b-terminal-20261020-01',
+    'kernel_release': identity.get('kernel_release') == subprocess.check_output(['uname','-r'],text=True).strip(),
+    'driver_abi': int(identity.get('driver_abi',-1)) == 2,
+    'terminal_abi': int(str(identity.get('terminal_abi','-1')),0) == 0x00020002,
+    'pl_abi': int(str(identity.get('pl_abi','-1')),0) == 0x00020002,
+}
+failed=[key for key,matched in checks.items() if not matched]
+if failed:
+    raise SystemExit('EEG_RECORDING_IDENTITY_MISMATCH:'+','.join(failed))
+PY
+probe=$(mktemp /var/lib/eeg-operator/recordings/.write-check.XXXXXX)
+printf 'persistent-storage-check\n' > "$probe"
+sync "$probe"
+rm -- "$probe"
+printf 'p5b-terminal-20261020-01 %s\n' "$(findmnt -n -o SOURCE --target /var/lib/eeg-operator/recordings)" > /run/eeg-recording-storage.ready

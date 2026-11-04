@@ -1,0 +1,24 @@
+# Local development system. Root password must be set physically at first boot.
+# Host keys live on the writable persistent root and are generated once per card.
+Port 22
+AddressFamily any
+PermitRootLogin yes
+PasswordAuthentication yes
+PermitEmptyPasswords no
+PubkeyAuthentication yes
+AuthenticationMethods any
+AuthorizedKeysFile .ssh/authorized_keys
+UsePAM no
+PermitTTY yes
+X11Forwarding no
+AllowTcpForwarding no
+AllowAgentForwarding no
+PermitTunnel no
+StrictModes yes
+MaxAuthTries 3
+LoginGraceTime 30
+PrintMotd no
+ClientAliveInterval 60
+ClientAliveCountMax 3
+PidFile /run/sshd.pid
+Subsystem sftp internal-sftp

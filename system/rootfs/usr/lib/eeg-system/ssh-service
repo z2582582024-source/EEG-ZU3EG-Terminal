@@ -1,0 +1,56 @@
+#!/bin/sh
+set -eu
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+PIDFILE=/run/sshd.pid
+
+pid_valid() {
+    [ -s "$PIDFILE" ] || return 1
+    read -r pid < "$PIDFILE"
+    case "$pid" in ''|*[!0-9]*) return 1;; esac
+    [ -r "/proc/$pid/comm" ] && [ "$(cat "/proc/$pid/comm")" = sshd ]
+}
+
+case "${1:-status}" in
+start)
+    /usr/lib/eeg-system/password-ready || {
+        echo 'EEG_SSH_WAITING_FOR_SERIAL_PASSWD'
+        exit 0
+    }
+    mkdir -p /run/sshd /root/.ssh
+    chmod 0755 /run/sshd
+    chmod 0700 /root/.ssh
+    if [ ! -e /etc/ssh/ssh_host_ed25519_key ]; then
+        /usr/bin/ssh-keygen -q -t ed25519 -N '' -f /etc/ssh/ssh_host_ed25519_key
+    fi
+    /usr/bin/ssh-keygen -A
+    /usr/sbin/sshd -t -f /etc/ssh/sshd_config
+    if pid_valid; then echo EEG_SSH_ALREADY_RUNNING; exit 0; fi
+    rm -f "$PIDFILE"
+    /usr/sbin/sshd -f /etc/ssh/sshd_config
+    count=0
+    while [ "$count" -lt 20 ] && ! pid_valid; do
+        count=$((count + 1))
+        sleep 0.1
+    done
+    pid_valid || { echo EEG_SSH_DAEMON_NOT_VERIFIED >&2; exit 1; }
+    echo EEG_SSH_READY
+    ;;
+stop)
+    if pid_valid; then
+        read -r pid < "$PIDFILE"
+        kill "$pid"
+        count=0
+        while [ -e "/proc/$pid" ] && [ "$count" -lt 30 ]; do
+            count=$((count + 1)); sleep 0.1
+        done
+        [ ! -e "/proc/$pid" ] || { echo EEG_SSH_STOP_NOT_VERIFIED >&2; exit 1; }
+    fi
+    rm -f "$PIDFILE"
+    ;;
+restart)
+    "$0" stop
+    "$0" start
+    ;;
+status) pid_valid || exit 1; cat "$PIDFILE";;
+*) echo 'Usage: ssh-service start|stop|status' >&2; exit 2;;
+esac

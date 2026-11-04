@@ -1,0 +1,14 @@
+[Unit]
+Description=EEG-ZU3EG ordinary root SSH, SFTP and SCP
+After=eeg-prepare.service
+Requires=eeg-prepare.service
+Wants=eeg-network.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/eeg-system/ssh-service start
+ExecStop=/usr/lib/eeg-system/ssh-service stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,35 @@
+/dts-v1/;
+
+/ {
+    description = "EEG-ZU3EG EEG1 persistent SD/eMMC kernel and DT";
+    #address-cells = <1>;
+    images {
+        kernel-1 {
+            description = "Linux 5.15.36-xilinx-v2022.2-eeg1";
+            data = /incbin/("Image");
+            type = "kernel";
+            arch = "arm64";
+            os = "linux";
+            compression = "none";
+            load = <0x00080000>;
+            entry = <0x00080000>;
+            hash-1 { algo = "sha256"; };
+        };
+        fdt-3eg {
+            description = "P5B XCZU3EG EEG1 no-PCIe final DT";
+            data = /incbin/("p5b-terminal.dtb");
+            type = "flat_dt";
+            arch = "arm64";
+            compression = "none";
+            hash-1 { algo = "sha256"; };
+        };
+    };
+    configurations {
+        default = "config-3eg";
+        config-3eg {
+            description = "EEG-ZU3EG persistent root selected by active MMC PARTUUID";
+            kernel = "kernel-1";
+            fdt = "fdt-3eg";
+        };
+    };
+};

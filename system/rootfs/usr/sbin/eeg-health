@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""Bounded, passive system observation; never opens ADC/DMA/DRM devices."""
+from pathlib import Path
+import argparse,datetime,json,os,signal,subprocess,sys,time,fcntl
+ROOT=Path('/var/log/eeg-health');PID=ROOT/'observer.pid'
+def text(path):
+    try:return Path(path).read_text().strip()
+    except OSError:return None
+def status(path):
+    try:
+        p=Path(path)
+        if p.stat().st_size>65536:return {'error':'oversize'}
+        return json.loads(p.read_text())
+    except (OSError,ValueError):return None
+def snapshot():
+    mem={}
+    for line in (text('/proc/meminfo') or '').splitlines():
+        k,_,v=line.partition(':')
+        if k in ('MemTotal','MemAvailable','MemFree','CmaTotal','CmaFree','Slab','SwapTotal','SwapFree'):mem[k]=v.strip()
+    try:
+        s=os.statvfs('/var/lib/eeg-operator/recordings');storage={'available_bytes':s.f_bavail*s.f_frsize,'total_bytes':s.f_blocks*s.f_frsize}
+    except OSError:storage=None
+    display=status('/run/eeg-operator/display.status.json')
+    try:
+        r=subprocess.run(['dmesg','--level=emerg,alert,crit,err,warn'],capture_output=True,text=True,timeout=3)
+        warnings=r.stdout.splitlines()[-16:] if not r.returncode else ['dmesg_unavailable']
+    except (OSError,subprocess.TimeoutExpired):warnings=['dmesg_unavailable']
+    sessions=[]
+    for p in sorted(Path('/var/lib/eeg-operator/recordings').glob('*_session.json'))[-16:]:
+        d=status(p)
+        if d:sessions.append({'file':p.name,**{k:d.get(k) for k in ('session_id','frames','packets','bytes','dropped_packets','recording_error','clean_end','finalized','segment_count','maximum_segment_bytes','maximum_queued_packets')}})
+    return {'schema':'eeg.passive_health.v1','utc_observed':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        'clock_trust':'UNVERIFIED_USE_BOOT_ID_AND_MONOTONIC','boot_id':text('/proc/sys/kernel/random/boot_id'),
+        'monotonic_seconds':time.monotonic(),'uptime':text('/proc/uptime'),'loadavg':text('/proc/loadavg'),'cpu_stat':text('/proc/stat').splitlines()[:5],
+        'memory_kib':mem,'temperature_millicelsius':{p.parent.name:text(p) for p in Path('/sys/class/thermal').glob('thermal_zone*/temp')},
+        'recording_storage':storage,'ui':status('/run/eeg-operator/ui.status.json'),'display':display,
+        'capture_cached_status':status('/run/eeg-operator/capture.status.json'),'recording_finalization':sessions,
+        'kernel_warning_tail':warnings,'counter_boundary':'Absent live packet/CRC/DMA/queue counters remain null; finalized recording sidecars and operator logs supply verified results after Stop. No device ownership is taken.'}
+def rotate():
+    p=ROOT/'health.jsonl'
+    if p.exists() and p.stat().st_size>=1024*1024:
+        for i in range(3,0,-1):
+            old=ROOT/('health.jsonl.'+str(i));new=ROOT/('health.jsonl.'+str(i+1))
+            if i==3 and old.exists():old.unlink()
+            elif old.exists():os.replace(old,new)
+        os.replace(p,ROOT/'health.jsonl.1')
+def process_starttime(raw):
+    # /proc/stat comm may contain spaces or parentheses. Fields after the
+    # final ')' begin at field3; starttime is field22.
+    return raw[raw.rindex(')')+2:].split()[19]
+def observer_identity(record,boot,stat_text,command_bytes):
+    if not isinstance(record,dict) or not isinstance(record.get('pid'),int) or record['pid']<=1 or not record.get('boot_id') or not record.get('starttime'):
+        return 'UNKNOWN_RECORD_NO_MUTATION'
+    if not boot:return 'UNKNOWN_BOOT_NO_MUTATION'
+    if record['boot_id']!=boot:return 'STALE_DIFFERENT_BOOT'
+    if stat_text is None:return 'STALE_PROCESS_ABSENT'
+    try:started=process_starttime(stat_text)
+    except (ValueError,IndexError):return 'UNKNOWN_PROCESS_STAT_NO_MUTATION'
+    if started!=record['starttime']:return 'STALE_PROCESS_REUSED'
+    args=[x.rsplit(b'/',1)[-1] for x in (command_bytes or b'').split(b'\0') if x]
+    if b'eeg-health' not in args:return 'UNKNOWN_COMMAND_NO_MUTATION'
+    return 'ACTIVE_VERIFIED'
+def inspect_observer():
+    if not PID.exists():return None,'STOPPED'
+    try:d=json.loads(PID.read_text())
+    except (OSError,ValueError):return None,'UNKNOWN_RECORD_NO_MUTATION'
+    p=Path('/proc')/str(d.get('pid','invalid'));stat_text=text(p/'stat')
+    try:command=(p/'cmdline').read_bytes()
+    except FileNotFoundError:command=None
+    except (OSError,PermissionError):return d,'UNKNOWN_COMMAND_NO_MUTATION'
+    return d,observer_identity(d,text('/proc/sys/kernel/random/boot_id'),stat_text,command)
+def archive_stale_observer(record,reason):
+    if not reason.startswith('STALE_'):raise RuntimeError('UNKNOWN_OR_ACTIVE_OBSERVER_REQUIRES_INSPECTION')
+    data=PID.read_bytes()
+    if json.loads(data)!=record:raise RuntimeError('OBSERVER_RECORD_CHANGED_NO_MUTATION')
+    archive=ROOT/'observer-history';archive.mkdir(exist_ok=True,mode=0o700)
+    target=archive/('observer-'+str(time.monotonic_ns())+'.json');assert not target.exists()
+    os.rename(PID,target)
+    receipt=target.with_suffix('.recovery.json')
+    receipt.write_text(json.dumps({'schema':'eeg.health.stale_record_recovery.v1','reason':reason,'archived':str(target),'boot_id':text('/proc/sys/kernel/random/boot_id'),'monotonic_ns':time.monotonic_ns(),'signals_sent':0,'hardware_operations':0})+'\n')
+    return str(target)
+def main():
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('action',choices=['snapshot','run','start','stop','status']);ap.add_argument('--interval',type=float,default=30);ap.add_argument('--duration',type=float,default=0);a=ap.parse_args()
+    if a.interval<5 or a.duration<0:ap.error('interval >=5 seconds; duration >=0')
+    if a.action=='snapshot':print(json.dumps(snapshot(),ensure_ascii=False,indent=2));return
+    ROOT.mkdir(parents=True,exist_ok=True,mode=0o700)
+    if a.action in ('status','stop'):
+        d,identity=inspect_observer()
+        if identity=='STOPPED':print('STOPPED');return
+        if identity!='ACTIVE_VERIFIED':print(json.dumps({'state':identity,'record':d,'signals_sent':0}));return
+        if a.action=='stop':os.kill(d['pid'],signal.SIGTERM);print('STOP_REQUESTED')
+        else:print(json.dumps(d))
+        return
+    lock=(ROOT/'observer-control.lock').open('a')
+    fcntl.flock(lock,fcntl.LOCK_EX)
+    try:
+        d,identity=inspect_observer()
+        if identity=='ACTIVE_VERIFIED':raise RuntimeError('EXISTING_ACTIVE_OBSERVER_PRESERVED')
+        if identity.startswith('UNKNOWN_'):raise RuntimeError(identity)
+        archived=archive_stale_observer(d,identity) if d else None
+        if a.action=='start':
+            log=(ROOT/'launcher.log').open('ab')
+            # Child takes the same control lock before exclusive PID creation.
+            p=subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'run','--interval',str(a.interval),'--duration',str(a.duration)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True)
+            print(json.dumps({'started_observer_pid':p.pid,'archived_stale_record':archived,'scope':'passive only; no ADC/DMA/DRM'}));return
+        # Exclusive PID marker is created below while the control lock is held.
+    finally:
+        if a.action=='start':fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
+    started=time.monotonic();running=True
+    def stop(signum,frame):
+        nonlocal running
+        running=False
+    signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
+    with PID.open('x') as f:json.dump({'pid':os.getpid(),'starttime':process_starttime(text('/proc/self/stat')),'boot_id':text('/proc/sys/kernel/random/boot_id'),'interval':a.interval,'started_monotonic':started},f)
+    fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
+    try:
+        while running and (not a.duration or time.monotonic()-started<a.duration):
+            rotate()
+            with (ROOT/'health.jsonl').open('a') as f:f.write(json.dumps(snapshot(),ensure_ascii=False,separators=(',',':'))+'\n')
+            end=time.monotonic()+a.interval
+            while running and time.monotonic()<end:time.sleep(min(.5,max(.01,end-time.monotonic())))
+    finally:
+        with (ROOT/'health.jsonl').open('a') as f:f.write(json.dumps({'schema':'eeg.passive_health.end.v1','actual_seconds':time.monotonic()-started,'boot_id':text('/proc/sys/kernel/random/boot_id')})+'\n')
+        # Never unlink another process's ownership marker.
+        current=status(PID)
+        if current and current.get('pid')==os.getpid() and current.get('boot_id')==text('/proc/sys/kernel/random/boot_id'):PID.unlink()
+if __name__=='__main__':main()

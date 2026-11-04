@@ -1,0 +1,19 @@
+#!/bin/sh
+# Called by systemd after local filesystems and udev.
+set -eu
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+hostname EEG-ZU3EG
+mkdir -p /run/lock /run/eeg-operator/timing /var/log/eeg /var/tmp/eeg-build \
+    /var/log/journal /var/lib/eeg-operator/recordings /opt/eeg/releases /opt/eeg/workspace
+mkdir -p /opt/eeg/releases /opt/eeg/workspace /var/lib/eeg-operator/recordings
+chmod 0700 /run/eeg-operator /run/eeg-operator/timing /var/lib/eeg-operator/recordings
+chmod 1777 /var/tmp/eeg-build
+mkdir -p /var/log/journal
+if /usr/lib/eeg-system/storage-check; then
+    echo EEG_PERSISTENT_STORAGE_READY
+else
+    rm -f /run/eeg-recording-storage.ready
+    echo EEG_RECORDING_DISABLED_STORAGE_CHECK_FAILED
+fi
+hostname EEG-ZU3EG
+echo 'EEG_SYSTEM_PREPARED acquisition=OFF stimulus=OFF'

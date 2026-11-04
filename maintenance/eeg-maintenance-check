@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+"""Observe local ownership and read-only UAPI state. Never stop/reset hardware."""
+import argparse
+try:
+    import fcntl
+except ImportError:  # Permit host-side contract tests; runtime is Linux-only.
+    fcntl=None
+import json
+import os
+from pathlib import Path
+import re
+import struct
+import sys
+
+RUN=Path('/run/eeg-operator')
+QUERY=(2<<30)|(64<<16)|(ord('D')<<8)|0x39
+
+def stimulus_is_off(command):
+    """A pending STOP request is safe even when no presenter remains to consume it."""
+    return command in ('', 'STOP', 'OFF') or re.fullmatch(r'STOP [0-9]+', command) is not None
+
+def quiescence_reason(state):
+    if state['acquisition_enable']!=0:return 'ACQUISITION_ENABLE_NOT_LOW'
+    if state['state'] not in (0,2,6) or state['flags']&0x28 or state['worker_busy'] or state['poisoned'] or state['gone']:
+        return 'TARGET_WORKER_OR_STATE_NOT_QUIESCENT'
+    if not state['dma_status']&1 or state['dma_status']&0x770 or state['dma_mask'] or state['write_index']!=state['read_index']:
+        return 'DMA_NOT_HALTED_AND_RETIRED'
+    if state['dma_status']&0x7000:return 'DMA_INTERRUPT_PENDING'
+    # cpu_mask records ring slots returned to CPU after DMA; the read index
+    # retires those slots. Consumed slots intentionally remain set until START.
+    return None
+
+def observe(maintenance_lock_held=False):
+    result=dict(schema='eeg.zu3eg.maintenance_state.v1',acquisition_enable='unknown',
+                capture='unknown',stimulus='unknown',dma='unknown',irq='unknown',
+                owner='unknown',target_state='unknown',physical_adc_power='not_observable',reasons=[])
+    locks=[]
+    device=None
+    maintenance_fd=None
+    try:
+        if fcntl is None:raise OSError('LINUX_FLOCK_REQUIRED')
+        if not maintenance_lock_held:
+            maintenance_fd=os.open(str(RUN/'maintenance.lock'),os.O_RDWR|os.O_CREAT|os.O_CLOEXEC|os.O_NOFOLLOW,0o600)
+            fcntl.flock(maintenance_fd,fcntl.LOCK_SH|fcntl.LOCK_NB)
+        for name in ('ui','display','capture'):
+            if (RUN/(name+'.active')).exists():
+                raise RuntimeError('ACTIVE_OWNER:'+name)
+            fd=os.open(str(RUN/(name+'.lock')),os.O_RDWR|os.O_CREAT|os.O_CLOEXEC|os.O_NOFOLLOW,0o600)
+            locks.append(fd)
+            fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        if any((RUN/name).exists() for name in ('ui.fault','fault.json')):
+            raise RuntimeError('PRESERVED_FAULT_REQUIRES_VERIFIED_RECOVERY')
+        # No UI/presenter owner and no active command may imply stimulation.
+        request=RUN/'stimulus.request'
+        if request.exists() and not stimulus_is_off(request.read_text().strip()):
+            raise RuntimeError('STIMULUS_COMMAND_NOT_OFF')
+        result['stimulus']='off'
+        device=os.open('/dev/eeg-dsp',os.O_RDONLY|os.O_CLOEXEC|os.O_NONBLOCK|os.O_NOFOLLOW)
+        payload=bytearray(64)
+        fcntl.ioctl(device,QUERY,payload,True)
+        words=struct.unpack('<16I',payload)
+        names=('magic','version','bytes','state','flags','dma_status','acquisition_enable',
+               'handoff','write_index','read_index','dma_mask','cpu_mask','worker_busy','poisoned','gone','reserved')
+        state=dict(zip(names,words));result['uapi']=state
+        if words[:3]!=(0x32445045,2,64):raise RuntimeError('MAINTENANCE_UAPI_IDENTITY_MISMATCH')
+        reason=quiescence_reason(state)
+        if reason=='ACQUISITION_ENABLE_NOT_LOW':raise RuntimeError(reason)
+        result['acquisition_enable']='low'
+        if reason=='TARGET_WORKER_OR_STATE_NOT_QUIESCENT':raise RuntimeError(reason)
+        result['capture']='idle'
+        if reason=='DMA_NOT_HALTED_AND_RETIRED':raise RuntimeError(reason)
+        result['dma']='idle'
+        if reason=='DMA_INTERRUPT_PENDING':raise RuntimeError(reason)
+        result['uapi']['retired_cpu_mask']=state['cpu_mask'] if state['write_index']==state['read_index'] else 0
+        result.update(irq='quiesced',owner='released',target_state='known')
+    except (OSError,RuntimeError) as exc:
+        result['reasons'].append(str(exc))
+    finally:
+        if device is not None:os.close(device)
+        for fd in locks:os.close(fd)
+        if maintenance_fd is not None:os.close(maintenance_fd)
+    return result
+
+def main():
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--json',action='store_true')
+    ap.add_argument('--maintenance-lock-held',action='store_true')
+    args=ap.parse_args()
+    if args.maintenance_lock_held and not (RUN/'maintenance.active').exists():
+        print(json.dumps({'schema':'eeg.zu3eg.maintenance_state.v1','target_state':'unknown',
+                          'reasons':['MAINTENANCE_LOCK_OWNER_MARKER_MISSING']}))
+        return 3
+    result=observe(args.maintenance_lock_held);print(json.dumps(result,sort_keys=True))
+    return 0 if result['target_state']=='known' else 3
+if __name__=='__main__':sys.exit(main())

@@ -1,0 +1,26 @@
+[Unit]
+Description=EEG Chinese offline speech synthesis (no automatic playback)
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/opt/eeg/tts/releases/zh-piper-20261024-01/eeg-tts-server /opt/eeg/tts/releases/zh-piper-20261024-01/model zh_CN-xiao_ya-medium.onnx /run/eeg-tts/zh.sock
+Environment=LD_LIBRARY_PATH=/opt/eeg/tts/releases/zh-piper-20261024-01/runtime/lib
+Environment=OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+RuntimeDirectory=eeg-tts
+RuntimeDirectoryMode=0700
+UMask=0077
+Nice=10
+CPUQuota=200%
+MemoryMax=512M
+TasksMax=64
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/run/eeg-tts
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

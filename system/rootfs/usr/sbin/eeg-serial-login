@@ -1,0 +1,15 @@
+#!/bin/sh
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+# A locked password cannot be used remotely. On the physical serial terminal only,
+# let the owner set the first password without shipping a shared secret.
+if ! /usr/lib/eeg-system/password-ready; then
+    echo 'EEG-ZU3EG first boot: set the root password on this serial terminal.'
+    echo 'Password input is hidden. No default or empty SSH password is enabled.'
+    /usr/bin/passwd root || { echo 'Password setup incomplete; retrying.'; sleep 2; exit 1; }
+    /usr/lib/eeg-system/password-ready || exit 1
+    systemctl restart eeg-sshd.service || true
+fi
+# Run the interactive console as a login shell so the same environment and prompt
+# are used on ttyPS0 and through SSH.
+export HOME=/root SHELL=/bin/bash TERM="${TERM:-vt100}"
+exec "${SHELL}" -l -i

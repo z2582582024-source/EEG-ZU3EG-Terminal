@@ -1,0 +1,29 @@
+{
+  "schema": "eeg.native.development.requirements.v1",
+  "distribution": "PetaLinux 2022.2 / Yocto matching existing SDK",
+  "base_packages": [
+    "packagegroup-core-boot", "packagegroup-core-buildessential", "bash", "coreutils",
+    "findutils", "diffutils", "grep", "sed", "gawk", "tar", "gzip", "xz", "unzip",
+    "less", "vim", "procps", "psmisc", "strace", "lsof", "file", "which", "git",
+    "cmake", "ninja", "pkgconfig", "python3-core", "python3-modules", "python3-pip",
+    "openssh", "openssh-sftp-server", "openssh-scp", "shadow", "util-linux",
+    "e2fsprogs", "dosfstools", "parted", "eudev", "kmod", "iproute2", "iputils",
+    "ethtool", "tcpdump", "usbutils", "pciutils", "i2c-tools", "alsa-utils",
+    "alsa-lib", "alsa-lib-dev", "libdrm", "libdrm-dev", "zlib-dev", "freetype-dev",
+    "libpng-dev", "libjpeg-turbo-dev", "fontconfig", "ttf-dejavu-sans",
+    "linux-firmware", "dtc"
+  ],
+  "qt_requirement": {
+    "runtime": "Qt 5.15.2 exact matching project ABI and chosen EGL/GLES graphics stack",
+    "target_tools": ["qmake", "moc", "rcc", "uic"],
+    "headers_and_link_libraries": ["QtCore", "QtGui", "QtWidgets", "QtConcurrent"],
+    "source_archive_sha256": "909fad2591ee367993a75d7e2ea50ad4db332f05e1c38dd7a5a274e156a4e0f8",
+    "recipe_candidates_to_resolve": ["qtbase-dev", "qtbase-tools", "qtbase-mkspecs", "qtbase-plugins"]
+  },
+  "required_native_proof": [
+    "upload C and C++ sources over SFTP, compile and execute over ordinary SSH",
+    "upload real project Qt component, run qmake/make on target, install atomically",
+    "verify changed component version after launch and controlled reboot"
+  ],
+  "status": "REQUIREMENTS_ONLY_NOT_YET_BUILT_OR_BOARD_VERIFIED"
+}

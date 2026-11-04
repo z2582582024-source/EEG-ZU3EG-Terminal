@@ -1,0 +1,16 @@
+[Unit]
+Description=EEG-ZU3EG local miniDP menu supervisor
+After=eeg-prepare.service eeg-dsp.service
+Requires=eeg-prepare.service eeg-dsp.service
+Wants=eeg-network.service eeg-sshd.service
+Conflicts=weston.service display-manager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/eeg-ui start
+ExecStop=/usr/bin/eeg-ui stop
+RemainAfterExit=yes
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target

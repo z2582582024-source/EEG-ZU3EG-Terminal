@@ -1,0 +1,13 @@
+[Unit]
+Description=EEG-ZU3EG identity and persistent recording filesystem
+After=local-fs.target systemd-udev-trigger.service
+Before=eeg-network.service eeg-dsp.service eeg-sshd.service eeg-menu.service
+RequiresMountsFor=/opt/eeg /var/lib/eeg-operator
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/eeg-system/prepare
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

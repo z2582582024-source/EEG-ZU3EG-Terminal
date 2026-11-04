@@ -1,0 +1,39 @@
+/dts-v1/;
+#include "zynqmp.dtsi"
+#include "zynqmp-clk-ccf.dtsi"
+
+/ {
+    model = "P5B XCZU3EG EEG1 SD/eMMC U-Boot control tree";
+    compatible = "eeg-zynq,p5b-terminal-eeg1", "xlnx,zynqmp";
+    aliases {
+        serial0 = &uart0;
+        mmc0 = &sdhci0;
+        mmc1 = &sdhci1;
+    };
+    chosen { stdout-path = "serial0:115200n8"; };
+    memory@0 {
+        device_type = "memory";
+        reg = <0x0 0x0 0x0 0x7ff00000>,
+               <0x00000008 0x00000000 0x0 0x80000000>;
+    };
+};
+
+&pss_ref_clk { clock-frequency = <33333000>; };
+&uart0 { status = "okay"; current-speed = <115200>; u-boot,dm-pre-reloc; };
+&zynqmp_firmware { u-boot,dm-pre-reloc; };
+&sdhci0 {
+    status = "okay";
+    bus-width = <8>;
+    non-removable;
+    disable-wp;
+    mmc-hs200-1_8v;
+    u-boot,dm-pre-reloc;
+};
+&sdhci1 {
+    status = "okay";
+    bus-width = <4>;
+    no-1-8-v;
+    disable-wp;
+    u-boot,dm-pre-reloc;
+};
+&pcie { status = "disabled"; };

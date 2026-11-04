@@ -1,0 +1,17 @@
+{
+  "schema": "eeg.zu3eg.system_identity.v1",
+  "app_schema": "eeg.p5b.operator_terminal.v1",
+  "product": "EEG-ZU3EG",
+  "storage_id": "p5b-terminal-20261020-01",
+  "kernel_release": "5.15.36-xilinx-v2022.2-eeg1",
+  "driver_abi": 2,
+  "terminal_abi": 131074,
+  "pl_abi": "0x00020002",
+  "edp_abi": 2,
+  "pl_build_id": "0x54455232",
+  "stream_algorithm_id": 131073,
+  "ui": "P5B_LOCAL_QT_KMS",
+  "default_stimulus": "OFF",
+  "channels": 16,
+  "automatic_adc_initialize": false
+}

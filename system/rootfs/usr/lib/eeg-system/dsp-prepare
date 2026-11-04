@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+modprobe eeg_dsp_dma_v2
+test -c /dev/eeg-dsp
+umask 077
+: > /run/eeg-operator/software-enabled
+echo 'EEG_DSP_DRIVER_READY acquisition=OFF stimulus=OFF'

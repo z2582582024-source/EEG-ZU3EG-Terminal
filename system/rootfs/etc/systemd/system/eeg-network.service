@@ -1,0 +1,15 @@
+[Unit]
+Description=EEG-ZU3EG identified PS GEM IPv4 configuration
+After=eeg-prepare.service
+Requires=eeg-prepare.service
+Before=network.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/sbin/modprobe motorcomm_cont
+ExecStart=/usr/sbin/eeg-network apply
+RemainAfterExit=yes
+TimeoutStartSec=35
+
+[Install]
+WantedBy=multi-user.target

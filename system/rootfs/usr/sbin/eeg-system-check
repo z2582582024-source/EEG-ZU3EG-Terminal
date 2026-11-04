@@ -1,0 +1,22 @@
+#!/bin/sh
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+echo ===IDENTITY===
+hostname
+uname -a
+cat /etc/eeg-system/baseline.json
+echo ===PERSISTENT_ROOT===
+findmnt -n -o SOURCE,FSTYPE,OPTIONS /
+df -h / /var/lib/eeg-operator/recordings
+echo ===PS_ETH===
+eeg-network status
+echo ===SSH===
+/usr/sbin/sshd -t && echo SSH_CONFIG_VALID
+for key in /etc/ssh/ssh_host_*_key.pub; do
+    [ ! -f "$key" ] || ssh-keygen -lf "$key"
+done
+echo ===USB_ENUMERATION===
+lsusb
+cat /proc/asound/cards
+echo ===APPLICATION===
+readlink -f /opt/eeg/current
+eeg-ui status

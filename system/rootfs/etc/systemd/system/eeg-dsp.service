@@ -1,0 +1,12 @@
+[Unit]
+Description=EEG DSP driver probe only; acquisition remains off
+After=eeg-prepare.service
+Requires=eeg-prepare.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/eeg-system/dsp-prepare
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

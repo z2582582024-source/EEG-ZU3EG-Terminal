@@ -1,0 +1,26 @@
+[Unit]
+Description=EEG natural English offline speech synthesis (no automatic playback)
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/opt/eeg/tts/releases/en-lessac-20261025-01/eeg-english-tts-server /opt/eeg/tts/releases/en-lessac-20261025-01/model en_US-lessac-medium.onnx /run/eeg-tts-en/en.sock
+Environment=LD_LIBRARY_PATH=/opt/eeg/tts/releases/zh-piper-20261024-01/runtime/lib
+Environment=OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+RuntimeDirectory=eeg-tts-en
+RuntimeDirectoryMode=0700
+UMask=0077
+Nice=10
+CPUQuota=200%
+MemoryMax=512M
+TasksMax=64
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/run/eeg-tts-en
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

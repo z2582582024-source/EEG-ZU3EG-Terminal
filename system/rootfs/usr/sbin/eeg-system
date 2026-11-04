@@ -1,0 +1,9 @@
+#!/bin/sh
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+case "${1:-status}" in
+check|status) exec /usr/sbin/eeg-system-check;;
+logs) exec journalctl --no-pager --since '1 day ago' "$@";;
+ssh) systemctl status eeg-sshd.service --no-pager;;
+services) systemctl --no-pager --full status eeg-prepare.service eeg-network.service eeg-dsp.service eeg-sshd.service eeg-menu.service;;
+*) echo 'Usage: eeg-system check|status|logs|ssh|services' >&2; exit 2;;
+esac
