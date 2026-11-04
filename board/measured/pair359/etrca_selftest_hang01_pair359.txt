@@ -1,0 +1,4 @@
+QIconvCodec::convertToUnicode: using Latin-1 for conversion, iconv_open failed
+QIconvCodec::convertFromUnicode: using Latin-1 for conversion, iconv_open failed
+ETRCA_SELFTEST_RESULT {"accuracy_of_all_windows":0.976,"accuracy_of_decided":0.988,"capture_seconds":39.677,"correct":82,"cv_accuracy_by_window":[0.56,0.75,0.893,0.952,0.988,1,1,1],"cv_quality":"GOOD","decided":83,"mean_decision_seconds":0.55,"no_decision":1,"no_record":0,"pl":{"armed":false,"available":true,"cal_id":9001,"checkpoint_latency":{"count":256,"max_us":1925.1200000000001,"mean_us":1890.39,"p99_us":1925.1200000000001},"error_bits":0,"frame_latency":{"count":11684,"max_us":860.16,"mean_us":848.02,"p99_us":860.16},"info":16779292,"pcrc":4254683911,"programmed":true,"records_waiting":0,"running":false,"status":565510152},"program_ms":53,"record_crc_bad":0,"solve_seconds":12.66,"store_bytes":247970,"total_seconds":69.984,"windows":84,"wrong":1}
+ETRCA_SELFTEST_PASS

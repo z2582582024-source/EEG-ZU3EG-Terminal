@@ -1,0 +1,2 @@
+st359_s01.bin: packets=153 words_compared=654687 mismatched_sections=NONE spectrum_windows=1 spectrum_records_checked=12296 spectrum_mismatches=0
+HW_EQUALS_GOLDEN

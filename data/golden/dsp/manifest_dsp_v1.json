@@ -1,0 +1,14 @@
+{
+  "classification": "software-generated golden data; not hardware capture or validation",
+  "files": {
+    "dsp_vectors_v1.json": {
+      "bytes": 15402,
+      "sha256": "0b8255d8102daa30177eab04532925a6ec067c7bbe39b881d271d6a6d7115891"
+    },
+    "electrode_mapping_v1.json": {
+      "bytes": 5674,
+      "sha256": "90fc40dbbda4dcf7fc11a5e750cc994b6becb18ce1be07837e30ab92707fa2cb"
+    }
+  },
+  "schema": "eeg-dsp-golden-manifest-v1"
+}

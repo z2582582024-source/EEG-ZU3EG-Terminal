@@ -1,0 +1,14 @@
+{
+  "classification": "software-generated golden data; not hardware capture",
+  "files": {
+    "ads1299_vectors_v1.json": {
+      "bytes": 910,
+      "sha256": "10260fb0ba251f7d37ee4f595778594cc376527b160093a87d992f9cb818ae94"
+    },
+    "eeg_frame_v1.bin": {
+      "bytes": 112,
+      "sha256": "363faf5a274b25a095fc375e8722d68dd16ad4c155d5f994ca610fc0ed554134"
+    }
+  },
+  "schema": "eeg-golden-manifest-v1"
+}

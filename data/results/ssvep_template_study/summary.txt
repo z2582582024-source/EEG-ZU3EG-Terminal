@@ -1,0 +1,9 @@
+offset 122 (deployed), alpha 0.5   forced diff by length (0.25 0.37 0.50 0.75 1.00 1.25 1.50 2.00 s):  +1.7  -0.6  -0.1  +0.1  +0.1  +0.2  +0.6  +0.2  mean +0.28 | dynamic acc(all) 92.9 -> 92.6  len 0.544 -> 0.534  ITR 236 -> 237
+offset 122, alpha 0.25             forced diff by length (0.25 0.37 0.50 0.75 1.00 1.25 1.50 2.00 s):  +3.9  +0.5  +0.1  +0.0  +0.1  +0.4  +0.5  +0.3  mean +0.73 | dynamic acc(all) 92.9 -> 92.4  len 0.544 -> 0.530  ITR 236 -> 237
+offset 122, alpha 0.75             forced diff by length (0.25 0.37 0.50 0.75 1.00 1.25 1.50 2.00 s):  -2.5  -2.7  -1.8  -0.6  -0.3  -0.4  +0.1  +0.1  mean -0.99 | dynamic acc(all) 92.9 -> 91.5  len 0.544 -> 0.543  ITR 236 -> 229
+offset 61 (0.25 s), alpha 0.5      forced diff by length (0.25 0.37 0.50 0.75 1.00 1.25 1.50 2.00 s):  +2.7  +0.8  +0.8  +0.2  -0.0  +0.3  +0.3  +0.5  mean +0.71 | dynamic acc(all) 90.9 -> 91.1  len 0.559 -> 0.546  ITR 223 -> 227
+offset 34 (0.14 s), alpha 0.5      forced diff by length (0.25 0.37 0.50 0.75 1.00 1.25 1.50 2.00 s): +13.3  +8.8  +6.2  +2.8  +1.0  +0.8  +0.4  +0.6  mean +4.25 | dynamic acc(all) 87.0 -> 90.4  len 0.604 -> 0.560  ITR 197 -> 221
+S1-S5 deployed offset, blend(0.5) - fourier forced diff:  +1.7  -0.8  -0.1  -0.2  -0.1  +0.1  +0.0  +0.1
+S6-S10 deployed offset, blend(0.5) - fourier forced diff:  +1.7  -0.4  -0.1  +0.3  +0.2  +0.4  +1.1  +0.4
+n windows per scheme: 3360
+deployed (fourier|resub) vs fourier|loro: decided 94.7 -> 97.7, acc|decided 97.7 -> 95.0, acc(all) 92.6 -> 92.9, mean len 0.664 -> 0.544

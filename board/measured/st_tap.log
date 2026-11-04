@@ -1,0 +1,62 @@
+INFO_OK packet_bytes=21248 interval_ns=1024000 algorithm=0x30001 flags=0x7b
+=== SESSION 1 ===
+STATUS start_of_session state=0 flags=0x0 error=0 packets_completed=0 frames_completed=0 published=0 dropped=0 in_ovf=0 fft_ovf=0 stage=0 epoch=0
+STEP initialize
+STATUS after_initialize state=6 flags=0x1 error=0 packets_completed=0 frames_completed=0 published=0 dropped=0 in_ovf=0 fft_ovf=0 stage=2 epoch=0
+STEP contact_diagnostic
+LEADOFF status=0x782 error=0 sample_counts=0x50005 off_masks=0xb7 phase=64 generation=1
+STATUS after_ack state=6 flags=0x11 error=0 packets_completed=0 frames_completed=0 published=0 dropped=0 in_ovf=0 fft_ovf=0 stage=3 epoch=0
+STEP start
+SSVEP_TAP cur_seq 2 -> 75 after 0.3 s (expect +73)
+STATUS running state=1 flags=0x11 error=0 packets_completed=2 frames_completed=256 published=1 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=2 frames_completed=256 published=2 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=10 frames_completed=1280 published=10 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=20 frames_completed=2560 published=20 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=30 frames_completed=3840 published=30 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=40 frames_completed=5120 published=40 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=50 frames_completed=6400 published=50 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=60 frames_completed=7680 published=60 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+STATUS running state=1 flags=0x11 error=0 packets_completed=70 frames_completed=8960 published=70 dropped=0 in_ovf=0 fft_ovf=0 stage=4 epoch=0
+SSVEP_TAP status=0x01b50084 err=0x0 capture_frames=800 cur_seq=2239 arm_seq=375
+SSVEP_TAP_READOUT_OK
+STEP stop (after 70 packets)
+STATUS after_stop state=2 flags=0x6 error=0 packets_completed=71 frames_completed=9088 published=71 dropped=0 in_ovf=0 fft_ovf=0 stage=5 epoch=0
+SUMMARY session=1 packets=71 bad=0 spectrum_packets=6 candidate_events=11 cycle_span_exact=70/70 flags_or=0xda7 rate_packets_per_s=7.900 (expect 7.629)
+CH01 n=8960 mean=7127829.8 min=2295247 max=8388607
+CH02 n=8960 mean=7127145.4 min=2293109 max=8388607
+CH03 n=8960 mean=7127238.7 min=2293968 max=8388607
+CH04 n=8960 mean=-102798.1 min=-2996364 max=1837539
+CH05 n=8960 mean=7128119.0 min=2297186 max=8388607
+CH06 n=8960 mean=7128485.2 min=2297219 max=8388607
+CH07 n=8960 mean=-243962.2 min=-8388608 max=4866133
+CH08 n=8960 mean=7128825.2 min=2298948 max=8388607
+CH09 n=8960 mean=545618.4 min=-8388608 max=8388607
+CH10 n=8960 mean=366656.1 min=-8388608 max=8388607
+CH11 n=8960 mean=485572.7 min=-8388608 max=8388607
+CH12 n=8960 mean=494488.6 min=-8388608 max=8388607
+CH13 n=8960 mean=484336.5 min=-8388608 max=8388607
+CH14 n=8960 mean=385230.9 min=-8388608 max=8388607
+CH15 n=8960 mean=477400.0 min=-8388608 max=8388607
+CH16 n=8960 mean=488734.9 min=-8388608 max=8388607
+HEALTH_PACKETS 70 (last packet, PL-computed over 128 frames)
+HEALTH CH01 mean=5496223 rms_code=171 hum_code=171 rail=44 flags=0x0b
+HEALTH CH02 mean=5494757 rms_code=171 hum_code=171 rail=44 flags=0x0b
+HEALTH CH03 mean=5494952 rms_code=171 hum_code=171 rail=44 flags=0x0b
+HEALTH CH04 mean=317405 rms_code=161 hum_code=176 rail=0 flags=0x08
+HEALTH CH05 mean=5496900 rms_code=171 hum_code=171 rail=44 flags=0x0b
+HEALTH CH06 mean=5497720 rms_code=171 hum_code=171 rail=44 flags=0x0b
+HEALTH CH07 mean=317478 rms_code=175 hum_code=175 rail=0 flags=0x08
+HEALTH CH08 mean=5498517 rms_code=171 hum_code=171 rail=44 flags=0x0b
+HEALTH CH09 mean=-3196618 rms_code=181 hum_code=185 rail=68 flags=0x0b
+HEALTH CH10 mean=-2680906 rms_code=182 hum_code=181 rail=60 flags=0x0b
+HEALTH CH11 mean=-2521876 rms_code=182 hum_code=181 rail=50 flags=0x0b
+HEALTH CH12 mean=-2525388 rms_code=182 hum_code=181 rail=54 flags=0x0b
+HEALTH CH13 mean=-2568813 rms_code=182 hum_code=181 rail=60 flags=0x0b
+HEALTH CH14 mean=-2697731 rms_code=182 hum_code=180 rail=61 flags=0x0b
+HEALTH CH15 mean=-2539547 rms_code=182 hum_code=181 rail=54 flags=0x0b
+HEALTH CH16 mean=-2533799 rms_code=182 hum_code=181 rail=57 flags=0x0b
+STATUS before_reset state=2 flags=0x6 error=0 packets_completed=71 frames_completed=9088 published=71 dropped=0 in_ovf=0 fft_ovf=0 stage=5 epoch=0
+STEP reset
+STATUS after_reset state=0 flags=0x0 error=0 packets_completed=0 frames_completed=0 published=0 dropped=0 in_ovf=0 fft_ovf=0 stage=0 epoch=1
+SESSION 1 RESULT PASS (0)
+STAGETEST_PASS

@@ -1,0 +1,5 @@
+runs=400  window=488 frames  targets=28  bands=5  channels=8  references=10 per target
+accumulate (488 frames) ms : mean 1.998  median 1.963  P99 2.717  max 3.046   -> per frame mean 0.0041 ms
+score per checkpoint ms    : mean 0.0084  median 0.0082  P99 0.0137  max 0.0202
+whole window + 8 checkpoints ms: mean 2.065  median 2.024  P99 2.809  max 3.116
+multiply-accumulates per frame: P = 11200, C = 180 (36 per band x 5)

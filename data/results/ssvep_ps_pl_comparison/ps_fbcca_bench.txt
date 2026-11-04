@@ -1,0 +1,2 @@
+runs=60  window=977 frames (4 s)  targets=28  bands=5  channels=8
+FBCCA analyze per window ms: mean 14.87  median 14.85  P99 16.83  max 17.43

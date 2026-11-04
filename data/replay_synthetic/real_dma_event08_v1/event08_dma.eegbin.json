@@ -1,0 +1,249 @@
+{
+  "channel_order": "ADS1_CH1..8,ADS2_CH1..8",
+  "classification": "real finite DMA board internal-test file replay; not human EEG",
+  "converter": "eeg_zynq.dma_event08_import-v1",
+  "current_replay_source": "FILE_REPLAY",
+  "display_labels": [
+    "FILE_REPLAY",
+    "真实DMA板测内部测试信号",
+    "非实时、非真人脑电"
+  ],
+  "electrode_mapping": {
+    "bias": {
+      "electrode": "AFz",
+      "role": "bias_drive",
+      "system_ground_connection": false
+    },
+    "channels": [
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN1P",
+        "adc_input_index": 1,
+        "board_input": "1P",
+        "cap_lead": "CH5",
+        "electrode": "FC3",
+        "logical_channel": "CH01",
+        "logical_index": 1
+      },
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN2P",
+        "adc_input_index": 2,
+        "board_input": "2P",
+        "cap_lead": "CH13",
+        "electrode": "FC4",
+        "logical_channel": "CH02",
+        "logical_index": 2
+      },
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN3P",
+        "adc_input_index": 3,
+        "board_input": "3P",
+        "cap_lead": "CH6",
+        "electrode": "C3",
+        "logical_channel": "CH03",
+        "logical_index": 3
+      },
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN4P",
+        "adc_input_index": 4,
+        "board_input": "4P",
+        "cap_lead": "CH14",
+        "electrode": "Cz",
+        "logical_channel": "CH04",
+        "logical_index": 4
+      },
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN5P",
+        "adc_input_index": 5,
+        "board_input": "5P",
+        "cap_lead": "CH7",
+        "electrode": "C4",
+        "logical_channel": "CH05",
+        "logical_index": 5
+      },
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN6P",
+        "adc_input_index": 6,
+        "board_input": "6P",
+        "cap_lead": "CH15",
+        "electrode": "CP3",
+        "logical_channel": "CH06",
+        "logical_index": 6
+      },
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN7P",
+        "adc_input_index": 7,
+        "board_input": "7P",
+        "cap_lead": "CH8",
+        "electrode": "CPz",
+        "logical_channel": "CH07",
+        "logical_index": 7
+      },
+      {
+        "adc_index": 1,
+        "adc_input": "ADS1299-1 IN8P",
+        "adc_input_index": 8,
+        "board_input": "8P",
+        "cap_lead": "CH16",
+        "electrode": "CP4",
+        "logical_channel": "CH08",
+        "logical_index": 8
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN1P",
+        "adc_input_index": 1,
+        "board_input": "9P",
+        "cap_lead": "CH1",
+        "electrode": "PO7",
+        "logical_channel": "CH09",
+        "logical_index": 9
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN2P",
+        "adc_input_index": 2,
+        "board_input": "10P",
+        "cap_lead": "CH9",
+        "electrode": "PO3",
+        "logical_channel": "CH10",
+        "logical_index": 10
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN3P",
+        "adc_input_index": 3,
+        "board_input": "11P",
+        "cap_lead": "CH2",
+        "electrode": "POz",
+        "logical_channel": "CH11",
+        "logical_index": 11
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN4P",
+        "adc_input_index": 4,
+        "board_input": "12P",
+        "cap_lead": "CH10",
+        "electrode": "PO4",
+        "logical_channel": "CH12",
+        "logical_index": 12
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN5P",
+        "adc_input_index": 5,
+        "board_input": "13P",
+        "cap_lead": "CH3",
+        "electrode": "PO8",
+        "logical_channel": "CH13",
+        "logical_index": 13
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN6P",
+        "adc_input_index": 6,
+        "board_input": "14P",
+        "cap_lead": "CH11",
+        "electrode": "O1",
+        "logical_channel": "CH14",
+        "logical_index": 14
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN7P",
+        "adc_input_index": 7,
+        "board_input": "15P",
+        "cap_lead": "CH4",
+        "electrode": "Oz",
+        "logical_channel": "CH15",
+        "logical_index": 15
+      },
+      {
+        "adc_index": 2,
+        "adc_input": "ADS1299-2 IN8P",
+        "adc_input_index": 8,
+        "board_input": "16P",
+        "cap_lead": "CH12",
+        "electrode": "O2",
+        "logical_channel": "CH16",
+        "logical_index": 16
+      }
+    ],
+    "reference": {
+      "electrode": "FCz",
+      "role": "common_reference"
+    },
+    "schema": "eeg-electrode-mapping-v1",
+    "status": "frozen-user-confirmed"
+  },
+  "event_id": "axis_dma_ddr_finite_internal_test_20261017_08",
+  "finite_end": "STOP; restart only by explicit user action",
+  "frame_format": {
+    "name": "EegFrameV1",
+    "record_bytes": 112,
+    "version": 1
+  },
+  "historical_transport": "PL_AXIS_DMA_S2MM_HP0_THEN_DEBUGGER_FILE_EXPORT",
+  "integrity": {
+    "algorithm": "SHA-256",
+    "data_sha256": "01c9931c29a5fa973d9110876761c7b26cd7e61351b850f9195cb10163469f15"
+  },
+  "limitations": [
+    "not Linux or Qt realtime acquisition",
+    "not continuous capture",
+    "not external input or human safety evidence",
+    "no independent per-beat TLAST/TKEEP or per-frame timestamp measurement"
+  ],
+  "new_acquisition": false,
+  "realtime": false,
+  "record_count": 256,
+  "result_report": {
+    "bytes": 14079,
+    "path": "docs/axis_dma_ddr_finite_internal_test_20261017_08_result.md",
+    "sha256": "cdf6facbcf14db71092dd175926a540c9a54d423ed2f626e1aba01cdf5cab142"
+  },
+  "sample_rate_millihz": 244141,
+  "schema": "eeg-real-finite-dma-file-import-v1",
+  "sources": [
+    {
+      "bytes": 24576,
+      "path": "build/axis_dma_ddr_pl_deadline_v1/board_test_20261017_08/dma_export/raw_dma.bin",
+      "sha256": "33d9f9bd7b3def775588a1724b52cb2b0d2c57f7405e358c151ef99e419b148b"
+    },
+    {
+      "bytes": 30929,
+      "path": "build/axis_dma_ddr_pl_deadline_v1/board_test_20261017_08/dma_export/raw_dma_frames.csv",
+      "sha256": "914f532e12313cd2030dc6f7359a196670ae25ca2cb1694a11602b1675df6728"
+    },
+    {
+      "bytes": 784,
+      "path": "build/axis_dma_ddr_pl_deadline_v1/board_test_20261017_08/dma_export/diagnostics.bin",
+      "sha256": "e59cac697a00b196389dd5640821f1fc0581ff89a18e1b759506acfead51b110"
+    },
+    {
+      "bytes": 1653,
+      "path": "build/axis_dma_ddr_pl_deadline_v1/board_test_20261017_08/dma_export/source_manifest.json",
+      "sha256": "95823e67c8553735cdee8a597969d8c8028314f2167615c1394357bb766defc8"
+    }
+  ],
+  "timebase": {
+    "basis": "DESIGN_DERIVED_NO_INDEPENDENT_PER_FRAME_MEASUREMENTS",
+    "design_sample_rate_sps": 244.140625,
+    "encoded_error_ppm": 1.536,
+    "encoded_rate_sps": 244.141,
+    "first_last_span_ns": 1044480000,
+    "rational_sps": [
+      15625,
+      64
+    ],
+    "sample_count_duration_ns": 1048576000,
+    "sample_interval_ns": 4096000
+  }
+}

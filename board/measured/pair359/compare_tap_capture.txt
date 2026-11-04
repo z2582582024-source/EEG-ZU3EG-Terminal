@@ -1,0 +1,19 @@
+capture: first live frame 75, armed 375, 800 frames, status 0x00130084, err 0x0, cur_seq at readout 4863
+golden decimator: 4896 frames, sequences 0..4895
+  golden starts at frame 0: 800/800 captured frames identical
+  golden starts at frame 1: 508/800 captured frames identical (first difference at j=12)
+  golden starts at frame 2: 604/800 captured frames identical (first difference at j=12)
+  golden starts at frame 3: 511/800 captured frames identical (first difference at j=12)
+  golden starts at frame 4: 504/800 captured frames identical (first difference at j=12)
+  golden starts at frame 5: 547/800 captured frames identical (first difference at j=12)
+  golden starts at frame 6: 495/800 captured frames identical (first difference at j=12)
+  golden starts at frame 7: 598/800 captured frames identical (first difference at j=12)
+  golden starts at frame 8: 706/800 captured frames identical (first difference at j=12)
+  golden starts at frame 9: 490/800 captured frames identical (first difference at j=12)
+  golden starts at frame 10: 494/800 captured frames identical (first difference at j=12)
+  golden starts at frame 11: 497/800 captured frames identical (first difference at j=12)
+  golden starts at frame 12: 509/800 captured frames identical (first difference at j=13)
+  golden starts at frame 13: 587/800 captured frames identical (first difference at j=12)
+  golden starts at frame 14: 541/800 captured frames identical (first difference at j=12)
+  golden starts at frame 15: 492/800 captured frames identical (first difference at j=12)
+TAP_CAPTURE_EQUALS_GOLDEN

@@ -1,0 +1,43 @@
+{
+  "classification": "CPU/Python golden reference; not hardware capture",
+  "schema": "ads1299-golden-v1",
+  "vectors": [
+    {
+      "gpio_hex": "0x0",
+      "loff_statn_hex": "0x00",
+      "loff_statp_hex": "0x00",
+      "name": "all_zero",
+      "raw_hex": "c00000000000000000000000000000000000000000000000000000",
+      "samples": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "status_hex": "0xC00000"
+    },
+    {
+      "gpio_hex": "0x7",
+      "loff_statn_hex": "0x3F",
+      "loff_statp_hex": "0x5A",
+      "name": "signed_boundaries_and_status_fields",
+      "raw_hex": "c5a3f7000000000001ffffff7fffff800000123456edcbaa00002a",
+      "samples": [
+        0,
+        1,
+        -1,
+        8388607,
+        -8388608,
+        1193046,
+        -1193046,
+        42
+      ],
+      "status_hex": "0xC5A3F7"
+    }
+  ],
+  "wire_order": "MSB-first"
+}
