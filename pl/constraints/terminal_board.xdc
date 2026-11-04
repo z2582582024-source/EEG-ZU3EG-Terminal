@@ -1,0 +1,23 @@
+# Existing reviewed workbook/J2 assignments; no inherited blanket input false path.
+set_property PACKAGE_PIN J1 [get_ports adc_din]
+set_property PACKAGE_PIN H1 [get_ports adc_pwdn_n]
+set_property PACKAGE_PIN H9 [get_ports adc_reset_n]
+set_property PACKAGE_PIN J6 [get_ports adc_sclk]
+set_property PACKAGE_PIN K2 [get_ports adc_start]
+set_property PACKAGE_PIN J4 [get_ports adc1_cs_n]
+set_property PACKAGE_PIN H8 [get_ports adc2_cs_n]
+set_property PACKAGE_PIN L7 [get_ports adc1_dout]
+set_property PACKAGE_PIN H6 [get_ports adc2_dout]
+set_property PACKAGE_PIN J5 [get_ports adc1_drdy_n]
+set_property PACKAGE_PIN L6 [get_ports adc2_drdy_n]
+set_property PACKAGE_PIN J2 [get_ports adc_clk]
+set_property IOSTANDARD LVCMOS12 [get_ports {adc_clk adc_din adc_pwdn_n adc_reset_n adc_sclk adc_start adc1_cs_n adc2_cs_n adc1_dout adc2_dout adc1_drdy_n adc2_drdy_n}]
+set_property DRIVE 2 [get_ports {adc_clk adc_din adc_pwdn_n adc_reset_n adc_sclk adc_start adc1_cs_n adc2_cs_n}]
+set_property SLEW SLOW [get_ports {adc_clk adc_din adc_pwdn_n adc_reset_n adc_sclk adc_start adc1_cs_n adc2_cs_n}]
+set_property PACKAGE_PIN AE5 [get_ports sys_clk_p]
+set_property PACKAGE_PIN AF5 [get_ports sys_clk_n]
+set_property IOSTANDARD DIFF_HSTL_I_12 [get_ports {sys_clk_p sys_clk_n}]
+create_clock -name board_100m -period 10.000 [get_ports sys_clk_p]
+create_generated_clock -name adc_2m -source [get_ports sys_clk_p] -divide_by 50 [get_ports adc_clk]
+# Missing board/translator delay evidence remains an explicit external timing gap.
+# No invented input/output delay, false path, clock groups or severity downgrade.

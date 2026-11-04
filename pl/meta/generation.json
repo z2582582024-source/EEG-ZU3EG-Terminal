@@ -1,0 +1,15 @@
+{
+  "purpose": "EDP2 + lead-off production integration, no target access",
+  "ps_baseline": "build\\p5b_operator_v2\\display_init_01\\xsa_03\\recreate_psdp_bd.tcl",
+  "ps_baseline_sha256": "02070c0e2a879858943419ee0d3f3ee12df72232a2bafb48827d6fe8b9924c54",
+  "boundary_baseline": "verification\\p5b_continuous_cap_v1\\rtl\\cont_dma_ps_v1.v",
+  "boundary_baseline_sha256": "68a76ac57dc992ba9065a3fdd1a7d6db903212577fee88918d4d5c88f9615414",
+  "physical_ports_unchanged": true,
+  "shared_clock_hz": 100000000,
+  "control_base": "0x80000000",
+  "dma_base": "0x80010000",
+  "irq_spi": 89,
+  "raw_frame_bytes": 96,
+  "edp2_packet_bytes": 9664,
+  "hardware_operations": 0
+}
